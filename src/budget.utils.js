@@ -2,21 +2,23 @@
  * 
  * @param {object} entry 
  */
-export function addBudget(entry) {
+export function addBudget(entry, editId) {
     let data = JSON.parse(localStorage.getItem('budgets'));
 
     //Is there an entry for this month already?
     if (data) {
         const entryExisting = data.hasOwnProperty(entry.id);
 
-        if (entryExisting && confirm('A budget for this month already exists, do you want to replace it?') == false) {
-            return;
+        if (editId == null && entryExisting && confirm('A budget for this month already exists, do you want to replace it?') == false) {
+            return false;
         }
     }
 
     data = { ...data, [entry.id]: entry };
 
     localStorage.setItem('budgets', JSON.stringify(data));
+
+    return true;
 }
 
 /**

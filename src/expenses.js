@@ -64,6 +64,7 @@ function onSave(e) {
     addExpense(formData);
     hydrate();
     form.reset();
+    editId = null;
 }
 
 function createRow(data) {
