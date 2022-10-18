@@ -28,6 +28,7 @@ export function createTag(tagName, attributes, ...content) {
     return el;
 }
 
+export const th = createTag.bind(null, 'th', {});
 export const tr = createTag.bind(null, 'tr', {});
 export const td = createTag.bind(null, 'td', {});
 
@@ -37,4 +38,26 @@ export function clearSelected() {
     if (selected) {
         selected.classList.remove('selected');
     }
+}
+
+
+//Get the total sum of each category
+export function categoriesSum(expenses) {
+    const categoriesTotal = {};
+
+    for (let entry of Object.values(expenses)) {
+        if (categoriesTotal.hasOwnProperty(entry.category)) {
+            categoriesTotal[entry.category] += Number(entry.amount);
+        } else {
+            categoriesTotal[entry.category] = Number(entry.amount);
+        }
+    }
+
+    return categoriesTotal;
+}
+
+//Get total spent
+export function getTotalSpent(expenses) {
+    const categoriesTotal = categoriesSum(expenses);
+    return Object.values(categoriesTotal).reduce((acc, b) => acc + b, 0);
 }
