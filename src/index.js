@@ -1,48 +1,13 @@
 import { getExpenses } from "./expenses.utils";
-import { categories, createTag } from "./common.utils";
+import { categories, categoriesSum, createTag, getTotalSpent } from "./common.utils";
 import { getBudgets } from "./budget.utils";
 
 const expenses = getExpenses();
-const categoriesTotal = {};
+const categoriesTotal = categoriesSum(expenses);
+const totalSpent = getTotalSpent(expenses);
 
-//Get the total sum of each category
-for (let entry of Object.values(expenses)) {
-    if (categoriesTotal.hasOwnProperty(entry)) {
-        categoriesTotal[entry.category] += Number(entry.amount);
-    } else {
-        categoriesTotal[entry.category] = Number(entry.amount);
-    }
-}
-
-const totalSpent = Object.values(categoriesTotal).reduce((acc, b) => acc + b, 0);
-
-setBreakdown();
 setOverView();
-
-
-
-function setBreakdown() {
-
-    const maxAmount = Math.max(...Object.values(categoriesTotal));
-    const categoriesTotalSorted = Object.entries(categoriesTotal).sort((a, b) => b[1] - a[1]);
-
-    //Append result
-    document.getElementById('breakdown').append(...categoriesTotalSorted.map(createCategory));
-
-    function createCategory([catId, amount]) {
-
-        //Create bar element and set width
-        const bar = createTag('span', { className: 'bar' });
-        bar.style.width = (amount / maxAmount * 500) + 'px';
-
-        const output = createTag('div', { className: 'cat-row' },
-            createTag('span', { className: 'row label' }, categories[catId]),
-            createTag('span', { className: 'row value' }, amount),
-            createTag('div', { className: 'bar-area' }, bar));
-
-        return output;
-    }
-}
+setBreakdown();
 
 function setOverView() {
 
@@ -66,4 +31,27 @@ function setOverView() {
 
     //Append result
     document.querySelector('article.clear div.right-col').append(spentBar, remainBar, saveBar);
+}
+
+function setBreakdown() {
+
+    const maxAmount = Math.max(...Object.values(categoriesTotal));
+    const categoriesTotalSorted = Object.entries(categoriesTotal).sort((a, b) => b[1] - a[1]);
+
+    //Append result
+    document.getElementById('breakdown').append(...categoriesTotalSorted.map(createCategory));
+
+    function createCategory([catId, amount]) {
+
+        //Create bar element and set width
+        const bar = createTag('span', { className: 'bar' });
+        bar.style.width = (amount / maxAmount * 500) + 'px';
+
+        const output = createTag('div', { className: 'cat-row' },
+            createTag('span', { className: 'row label' }, categories[catId]),
+            createTag('span', { className: 'row value' }, amount),
+            createTag('div', { className: 'bar-area' }, bar));
+
+        return output;
+    }
 }
