@@ -69,7 +69,7 @@ function onSave(e) {
     }
 
     //Check if monthly income is enough
-    const monthlyExpenses = getMonthlyExpenses(monthInUnix);
+    const monthlyExpenses = getMonthlyExpenses(monthInUnix, editId);
 
     if ((plannedMonth.income - monthlyExpenses) < formData.amount) {
         return alert('Your remaining monthly income is not enough.');

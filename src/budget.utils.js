@@ -43,5 +43,5 @@ export function getBudget(id) {
 }
 
 export function getBudgets() {
-    return JSON.parse(localStorage.getItem('budgets'));
+    return JSON.parse(localStorage.getItem('budgets')) || {};
 }

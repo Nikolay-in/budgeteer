@@ -34,16 +34,24 @@ export function getExpenses() {
     return JSON.parse(localStorage.getItem('expenses'));
 }
 
-export function getMonthlyExpenses(monthInUnix) {
+export function getMonthlyExpenses(monthInUnix, editId) {
     //Next month in unix
     const month = new Date(monthInUnix);
     month.setMonth(month.getMonth() + 1);
     const nextMonthInUnix = Date.parse(month);
 
-    //Get expenses for current month
-    const expenses = Object.values(getExpenses()).filter(el => el.date >= monthInUnix && el.date < nextMonthInUnix);
-    console.log(new Date(monthInUnix));
-    console.log(new Date(nextMonthInUnix));
-    console.log(expenses);
-    return expenses.reduce((acc, b) => acc + Number(b.amount), 0);
+    let expenses = getExpenses();
+    if (expenses) {
+        //Get expenses for current month
+        expenses = Object.values(expenses).filter(el => el.date >= monthInUnix && el.date < nextMonthInUnix);
+
+        //If editing exclude current entry amount
+        if (editId != null) {
+            expenses = expenses.filter(el => el.id != editId);
+        }
+
+        return expenses.reduce((acc, b) => acc + Number(b.amount), 0);
+    } else {
+        return 0;
+    }
 }

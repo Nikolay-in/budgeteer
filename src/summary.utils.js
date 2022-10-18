@@ -11,12 +11,14 @@ export function categoriesMonthlySum(budgets, expenses) {
     }
     categories;
     //Calculate the monthly sum of each category
-    for (let entry of Object.values(expenses)) {
-        const date = new Date(entry.date);
-        const month = getMonthInUnix(date);
+    if (expenses != null) {
+        for (let entry of Object.values(expenses)) {
+            const date = new Date(entry.date);
+            const month = getMonthInUnix(date);
 
-        if (budgets.hasOwnProperty(month)) {
-            budgets[month].categories[entry.category] += Number(entry.amount);
+            if (budgets.hasOwnProperty(month)) {
+                budgets[month].categories[entry.category] += Number(entry.amount);
+            }
         }
     }
 

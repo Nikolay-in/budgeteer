@@ -45,11 +45,13 @@ export function clearSelected() {
 export function categoriesSum(expenses) {
     const categoriesTotal = {};
 
-    for (let entry of Object.values(expenses)) {
-        if (categoriesTotal.hasOwnProperty(entry.category)) {
-            categoriesTotal[entry.category] += Number(entry.amount);
-        } else {
-            categoriesTotal[entry.category] = Number(entry.amount);
+    if (expenses != null) {
+        for (let entry of Object.values(expenses)) {
+            if (categoriesTotal.hasOwnProperty(entry.category)) {
+                categoriesTotal[entry.category] += Number(entry.amount);
+            } else {
+                categoriesTotal[entry.category] = Number(entry.amount);
+            }
         }
     }
 
