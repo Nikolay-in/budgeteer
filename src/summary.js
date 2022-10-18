@@ -12,13 +12,17 @@ const expenses = getExpenses();
 const categoriesTotal = categoriesSum(expenses);
 const totalSpent = getTotalSpent(expenses);
 const months = Object.keys(budgets).sort((a, b) => a - b); //Months sorted ascending
+const perPage = 3;
 
 //Get monthly budgets with categories monthly sum
 const summary = categoriesMonthlySum(budgets, expenses);
 
-hydrateTable();
+hydrateTable(0);
 
-function hydrateTable() {
+function hydrateTable(page) {
+    const indexFrom = page * perPage;
+    const indexTo = indexFrom + perPage;
+
     //Add headers
     for (let month of months) {
         const date = new Date(Number(month));
