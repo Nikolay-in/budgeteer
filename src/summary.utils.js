@@ -8,10 +8,13 @@ export function categoriesMonthlySum(budgets, expenses) {
     for (let month in budgets) {
         const catIds = Object.keys(categories).map(el => [el, 0]);
         budgets[month].categories = Object.fromEntries(catIds);
+        budgets[month].spent = 0;
+        budgets[month].overrun = 0;
+        budgets[month].savings = 0;
     }
-    categories;
-    //Calculate the monthly sum of each category
+
     if (expenses != null) {
+        //Calculate the monthly sum of each category
         for (let entry of Object.values(expenses)) {
             const date = new Date(entry.date);
             const month = getMonthInUnix(date);
@@ -20,7 +23,16 @@ export function categoriesMonthlySum(budgets, expenses) {
                 budgets[month].categories[entry.category] += Number(entry.amount);
             }
         }
+
     }
 
+    //Calculate monthly spent, overrun, savings
+    for (let month in budgets) {
+        budgets[month].spent = Object.values(budgets[month].categories).reduce((acc, b) => acc + b, 0);
+        budgets[month].overrun = budgets[month].spent - budgets[month].budget;
+        budgets[month].savings = budgets[month].income - budgets[month].spent;
+    }
+
+    // console.log(budgets);
     return budgets;
 }
