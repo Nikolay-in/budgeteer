@@ -33,3 +33,17 @@ export function getExpense(id) {
 export function getExpenses() {
     return JSON.parse(localStorage.getItem('expenses'));
 }
+
+export function getMonthlyExpenses(monthInUnix) {
+    //Next month in unix
+    const month = new Date(monthInUnix);
+    month.setMonth(month.getMonth() + 1);
+    const nextMonthInUnix = Date.parse(month);
+
+    //Get expenses for current month
+    const expenses = Object.values(getExpenses()).filter(el => el.date >= monthInUnix && el.date < nextMonthInUnix);
+    console.log(new Date(monthInUnix));
+    console.log(new Date(nextMonthInUnix));
+    console.log(expenses);
+    return expenses.reduce((acc, b) => acc + Number(b.amount), 0);
+}

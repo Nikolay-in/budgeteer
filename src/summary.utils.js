@@ -1,4 +1,4 @@
-import { categories } from "./common.utils";
+import { categories, getMonthInUnix } from "./common.utils";
 
 
 //Add categories monthly sum to each month
@@ -13,8 +13,7 @@ export function categoriesMonthlySum(budgets, expenses) {
     //Calculate the monthly sum of each category
     for (let entry of Object.values(expenses)) {
         const date = new Date(entry.date);
-        //Leading zero in month makes 2 hours difference ?!
-        const month = Date.parse(`${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, 0)}`).toString();
+        const month = getMonthInUnix(date);
 
         if (budgets.hasOwnProperty(month)) {
             budgets[month].categories[entry.category] += Number(entry.amount);

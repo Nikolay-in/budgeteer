@@ -11,7 +11,7 @@ const budgets = getBudgets();
 const expenses = getExpenses();
 const categoriesTotal = categoriesSum(expenses);
 const totalSpent = getTotalSpent(expenses);
-const months = Object.keys(summary).sort((a, b) => a - b); //Months sorted ascending
+const months = Object.keys(budgets).sort((a, b) => a - b); //Months sorted ascending
 
 //Get monthly budgets with categories monthly sum
 const summary = categoriesMonthlySum(budgets, expenses);

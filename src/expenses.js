@@ -1,6 +1,7 @@
-import { getExpense, getExpenses, addExpense, delExpense } from "./expenses.utils";
-import { categories, createTag, tr, td, clearSelected } from "./common.utils";
+import { getExpense, getExpenses, addExpense, delExpense, getMonthlyExpenses } from "./expenses.utils";
+import { categories, createTag, tr, td, clearSelected, getMonthInUnix } from "./common.utils";
 import { v4 as uuid } from "uuid";
+import { getBudget } from "./budget.utils";
 
 const form = document.getElementById('new-expense');
 const [saveBtn, cancelBtn] = document.querySelectorAll('form#new-expense button');
@@ -58,6 +59,29 @@ function onSave(e) {
     } else {
         formData.id = uuid();
         //Check if id is unique
+    }
+
+    //Get month in unix format and check if there is a budget for this month
+    const monthInUnix = getMonthInUnix(new Date(formData.date));
+    const plannedMonth = getBudget(monthInUnix);
+    if (plannedMonth == null) {
+        return alert('There is no budget planned for this month.');
+    }
+
+    //Check if monthly income is enough
+    const monthlyExpenses = getMonthlyExpenses(monthInUnix);
+
+    if ((plannedMonth.income - monthlyExpenses) < formData.amount) {
+        return alert('Your remaining monthly income is not enough.');
+    }
+
+    //Check planned budget
+    if ((plannedMonth.budget - monthlyExpenses) < formData.amount) {
+        const confirmation = confirm('You are exceeding your planned budget, do you want to proceed?');
+
+        if (confirmation == false) {
+            return;
+        }
     }
 
     //Create and re-hydrate
@@ -126,3 +150,5 @@ function checkEmptyTable() {
         tbody.replaceChildren(row);
     }
 }
+
+window.getMonthlyExpenses = getMonthlyExpenses;

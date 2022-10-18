@@ -61,3 +61,10 @@ export function getTotalSpent(expenses) {
     const categoriesTotal = categoriesSum(expenses);
     return Object.values(categoriesTotal).reduce((acc, b) => acc + b, 0);
 }
+
+//Leading zero in month makes 2 hours difference ?!
+export function getMonthInUnix(date) {
+    return Date.parse(`${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, 0)}`);
+}
+
+window.getMonthInUnix = getMonthInUnix;
