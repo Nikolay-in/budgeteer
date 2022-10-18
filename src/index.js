@@ -14,11 +14,13 @@ function setOverView() {
     const budgets = Object.values(getBudgets());
     const totalIncome = budgets.reduce((acc, b) => acc + Number(b.income), 0);
     const totalBudget = budgets.reduce((acc, b) => acc + Number(b.budget), 0);
+    let remaining = totalBudget - totalSpent;
+    remaining = remaining < 0 ? 0 : remaining;
 
-    const [spent, remaining, savings] = document.querySelectorAll('article.clear div.cat-row span.value');
-    spent.textContent = totalSpent;
-    remaining.textContent = totalBudget - totalSpent;
-    savings.textContent = totalIncome - totalBudget;
+    const [spentElement, remainigElement, savingsElement] = document.querySelectorAll('article.clear div.cat-row span.value');
+    spentElement.textContent = totalSpent;
+    remainigElement.textContent = remaining;
+    savingsElement.textContent = totalIncome - totalSpent;
 
 
     //Set overview bars
@@ -26,8 +28,8 @@ function setOverView() {
     const remainBar = createTag('div', { className: 'ov remain' });
     const saveBar = createTag('div', { className: 'ov save' });
     spentBar.style.height = totalSpent / totalIncome * 300 + 'px';
-    remainBar.style.height = (totalBudget - totalSpent) / totalIncome * 300 + 'px';
-    saveBar.style.height = (totalIncome - totalBudget) / totalIncome * 300 + 'px';
+    remainBar.style.height = remaining / totalIncome * 300 + 'px';
+    saveBar.style.height = (totalIncome - totalSpent) / totalIncome * 300 + 'px';
 
     //Append result
     document.querySelector('article.clear div.right-col').append(spentBar, remainBar, saveBar);
