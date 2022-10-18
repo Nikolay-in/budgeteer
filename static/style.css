@@ -230,6 +230,11 @@ select {
     margin: 4px;
 }
 
+.action[disabled] {
+    cursor: not-allowed;
+    filter: brightness(75%);
+}
+
 .centered {
     text-align: center;
 }
