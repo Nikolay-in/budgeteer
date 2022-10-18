@@ -123,9 +123,7 @@ function tableClick(e) {
             amountInput.value = entry.amount;
             categorySelectOption.selected = true;
 
-
-
-            //Select current
+            //Highlight current entry
             clearSelected();
             row.classList.add('selected');
 
@@ -146,9 +144,7 @@ function tableClick(e) {
 
 function checkEmptyTable() {
     if (tbody.children.length == 0) {
-        const row = tr(createTag('td', { colSpan: '5' }, 'No Entries yet.'));
+        const row = tr(createTag('td', { colSpan: '5' }, 'No entries yet.'));
         tbody.replaceChildren(row);
     }
 }
-
-window.getMonthlyExpenses = getMonthlyExpenses;

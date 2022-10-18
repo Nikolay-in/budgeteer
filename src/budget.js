@@ -53,7 +53,7 @@ function onSave(e) {
         return alert('Required date format is mm-yyyy.');
     }
 
-    if (Number(formData.income) < Number(formData.budget)) {
+    if (formData.income < formData.budget) {
         return alert('Income cannot be less than budget.');
     }
 
@@ -127,7 +127,7 @@ function tableClick(e) {
 
 function checkEmptyTable() {
     if (tbody.children.length == 0) {
-        const row = tr(createTag('td', { colSpan: '4' }, 'No Entries yet.'));
+        const row = tr(createTag('td', { colSpan: '4' }, 'No entries yet.'));
         tbody.replaceChildren(row);
     }
 }
