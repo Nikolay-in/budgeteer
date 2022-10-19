@@ -18,7 +18,7 @@ const summary = categoriesMonthlySum(budgets, expenses); //Get monthly budgets w
 
 //Start the page from the current quarter - array of 3 months in unix
 let currentPageQuarter = getQuarterUnix(Date.now());
-const pageOfPresentQuarter = getQuarterUnix(Date.now());
+const pageOfPresentTimeQuarter = getQuarterUnix(Date.now());
 
 
 hydrateTable(currentPageQuarter);
@@ -116,35 +116,29 @@ function hydrateTable(page) {
 
 function movePage(to) {
     //Set new page
+    let targetPage = '';
+    const date = new Date(currentPageQuarter[0]);
+
     if (to == 'prev') {
         //Calculate previous quarter start
-        const date = new Date(currentPageQuarter[0]);
         date.setUTCMonth(date.getUTCMonth() - 3);
-        const prevQuarterStartUnix = Date.parse(`${date.getUTCFullYear()}-${(date.getUTCMonth() + 1).toString().padStart(2, 0)}`);
-        const prevPageQuarterUnix = getQuarterUnix(prevQuarterStartUnix);
-
-        currentPageQuarter = prevPageQuarterUnix;
-        hydrateTable(prevPageQuarterUnix);
-
+        const prevQuarterStartUnix = date.getTime();
+        targetPage = getQuarterUnix(prevQuarterStartUnix);
     } else if (to == 'next') {
         //Calculate next quarter start
-        const date = new Date(currentPageQuarter[0]);
         date.setUTCMonth(date.getUTCMonth() + 3);
-        const nextQuarterStartUnix = Date.parse(`${date.getUTCFullYear()}-${(date.getUTCMonth() + 1).toString().padStart(2, 0)}`);
-        const nextPageQuarterUnix = getQuarterUnix(nextQuarterStartUnix);
-
-        currentPageQuarter = nextPageQuarterUnix;
-        hydrateTable(nextPageQuarterUnix);
-
+        const nextQuarterStartUnix = date.getTime();
+        targetPage = getQuarterUnix(nextQuarterStartUnix);
     } else if (to == 'present') {
-
-        currentPageQuarter = pageOfPresentQuarter;
-        hydrateTable(pageOfPresentQuarter);
+        targetPage = pageOfPresentTimeQuarter;
     }
+    currentPageQuarter = targetPage;
+
+    hydrateTable(currentPageQuarter);
 }
 
 function checkButtons() {
-    if (currentPageQuarter[0] == pageOfPresentQuarter[0]) {
+    if (currentPageQuarter[0] == pageOfPresentTimeQuarter[0]) {
         presentBtn.disabled = true;
     } else if (presentBtn.disabled == true) {
         presentBtn.disabled = false;

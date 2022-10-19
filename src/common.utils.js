@@ -72,7 +72,7 @@ export function getCategoriesQarterlySum(months, expenses) {
         //Calculate quarter range end
         const date = new Date(unixRangeStart);
         date.setUTCMonth(date.getUTCMonth() + 3);
-        const unixRangeEnd = Date.parse(`${date.getUTCFullYear()}-${(date.getUTCMonth() + 1).toString().padStart(2, 0)}`);
+        const unixRangeEnd = date.getTime();
         const expensesEntries = Object.values(expenses).filter(el => el.date >= unixRangeStart && el.date < unixRangeEnd);
 
         for (let entry of expensesEntries) {
