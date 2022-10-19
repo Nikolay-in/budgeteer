@@ -5,7 +5,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack",
-    "dev": "webpack serve"
+    "dev": "webpack serve",
+    "start": "http-server -a localhost -p 3000 -P http://localhost:3000?"
   },
   "repository": {
     "type": "git",
@@ -25,6 +26,7 @@
     "webpack-dev-server": "^4.11.1"
   },
   "dependencies": {
+    "http-server": "^14.1.1",
     "uuid": "^9.0.0"
   }
 }
