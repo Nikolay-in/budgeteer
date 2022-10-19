@@ -1,5 +1,5 @@
 import { getBudgets } from "./budget.utils";
-import { categories, createTag, th, td, tr, getCategoriesQarterlySum } from "./common.utils";
+import { categories, createTag, th, td, tr } from "./common.utils";
 import { getExpenses } from "./expenses.utils";
 import { categoriesMonthlySum, getQuarterUnix } from "./summary.utils";
 
@@ -51,12 +51,9 @@ function hydrateTable(page) {
     //Remove old entries if present
     tbody.innerHTML = '';
 
-    //Get each category quarterly total
-    const categoriesTotal = getCategoriesQarterlySum(page, expenses);
     //Add a row for each category
-    for (let [catId, catTotal] of Object.entries(categoriesTotal)) {
+    for (let [catId, catName] of Object.entries(categories)) {
         //Create a row for the category
-        const catName = categories[catId];
         const row = tr(th(catName));
 
         let categoryTotal = 0;
@@ -83,6 +80,7 @@ function hydrateTable(page) {
     let totalSavings = 0;
 
     for (let month of page) {
+
         let spentSum = 0;
         let overrun = 0;
         let saving = 0;
@@ -116,7 +114,7 @@ function hydrateTable(page) {
 
 function movePage(to) {
     //Set new page
-    let targetPage = '';
+    let targetPage;
     const date = new Date(currentPageQuarter[0]);
 
     if (to == 'prev') {
