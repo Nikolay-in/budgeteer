@@ -38,10 +38,14 @@ export function categoriesMonthlySum(budgets, expenses) {
         budgets[month].savings = budgets[month].income - budgets[month].spent;
     }
 
-    // console.log(budgets);
     return budgets;
 }
 
+/**
+ * 
+ * @param {number} dateUnix 
+ * @returns {number[]}
+ */
 export function getQuarterUnix(dateUnix) {
     const date = new Date(dateUnix);
     const currentMonthIndex = date.getUTCMonth();

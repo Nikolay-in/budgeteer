@@ -14,7 +14,7 @@ nextBtn.addEventListener('click', () => movePage('next'));
 
 const budgets = getBudgets();
 const expenses = getExpenses();
-const summary = categoriesMonthlySum(budgets, expenses); //Get monthly budgets with categories monthly sum
+const summary = categoriesMonthlySum(budgets, expenses); //Decorate monthly budgets with categories monthly expenses sum
 
 //Start the page from the current quarter - array of 3 months in unix
 let currentPageQuarter = getQuarterUnix(Date.now());
@@ -39,6 +39,7 @@ function hydrateTable(page) {
     const tableTitle = getTableTitle(page);
     thead.appendChild(tr(createTag('th', { colSpan: '5' }, tableTitle)));
     const theadRow = tr(th('Category'));
+
     for (let month of page) {
         const date = new Date(Number(month));
         const dateString = date.toLocaleString('en-US', { month: 'short' });
@@ -57,8 +58,8 @@ function hydrateTable(page) {
         const row = tr(th(catName));
 
         let categoryTotal = 0;
-        //Go through months
 
+        //Go through months
         for (let month of page) {
             let categoryMonthlySum = 0;
 
@@ -71,7 +72,10 @@ function hydrateTable(page) {
         }
 
         row.appendChild(th(createTag('span', { className: 'currency' }, categoryTotal)));
-        tbody.appendChild(row);
+
+        if (categoryTotal > 0) {
+            tbody.appendChild(row);
+        }
     }
 
     //Table footer
@@ -145,8 +149,8 @@ function checkButtons() {
 
 function checkEmptyTable() {
     if (tbody.children.length == 0) {
-        const row = tr(createTag('td', { colSpan: '5' }, 'No entries yet.'));
-        tbody.replaceChildren(row);
+        const row = tr(createTag('td', { colSpan: '5' }, 'No expenses yet.'));
+        tbody.appendChild(row);
     }
 }
 
