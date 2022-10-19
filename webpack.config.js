@@ -2,8 +2,8 @@ const path = require('path');
 // const HtmlWebpackPlugin = require('html-webpack-plugin'); reminder for later use
 
 module.exports = {
-    mode: 'development',
-    devtool: 'eval-source-map',
+    mode: 'production',
+    // devtool: 'eval-source-map', - only in development mode
     entry: {
         index: path.resolve(__dirname, 'src/index.js'),
         expenses: path.resolve(__dirname, 'src/expenses.js'),
