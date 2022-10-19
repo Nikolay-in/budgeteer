@@ -40,7 +40,7 @@ function setOverView() {
 
 function setBreakdown() {
     //If no data
-    if (categoriesTotal.length == 0) {
+    if (Object.keys(categoriesTotal).length == 0) {
         document.getElementById('breakdown').append(createTag('div', { className: 'cat-row' }, 'No Data Yet.'));
     } else {
         //Append result
