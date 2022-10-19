@@ -16,7 +16,7 @@ function hydrate() {
     let expenses = getExpenses();
     //Get values and sort by date 
     if (expenses) {
-        expenses = [...Object.values(expenses)].sort((a, b) => b.date - a.date);
+        expenses = Object.values(expenses).sort((a, b) => b.date - a.date);
         tbody.replaceChildren(...expenses.map(createRow));
     }
 
@@ -45,7 +45,7 @@ function onSave(e) {
 
     const formData = Object.fromEntries(new FormData(form));
 
-    if (Object.values(formData).some(el => el === '')) {
+    if (Object.values(formData).some(el => el == '')) {
         return alert('All fields are required.');
     }
 
@@ -59,10 +59,13 @@ function onSave(e) {
     } else {
         formData.id = uuid();
         //Check if id is unique
+        while (getExpense(formData.id) != null) {
+            formData.id = uuid();
+        }
     }
 
     //Get month in unix format and check if there is a budget for this month
-    const monthInUnix = getMonthInUnix(new Date(formData.date));
+    const monthInUnix = getMonthInUnix(formData.date);
     const plannedMonth = getBudget(monthInUnix);
     if (plannedMonth == null) {
         return alert('There is no budget planned for this month.');
@@ -95,7 +98,7 @@ function createRow(data) {
     const date = new Date(data.date);
 
     const row = createTag('tr', { id: data.id },
-        td(`${date.getDate()}.${date.toLocaleString('en-US', { month: 'short' })}`),
+        td(`${date.getUTCDate()}.${date.toLocaleString('en-US', { month: 'short', timeZone: 'UTC' })}`),
         td(data.name),
         td(categories[data.category]),
         td(createTag('span', { className: 'currency' }, data.amount)),
@@ -116,9 +119,9 @@ function tableClick(e) {
 
             const [dateInput, nameInput, amountInput] = document.querySelectorAll('form#new-expense input');
             const categorySelectOption = document.querySelector(`form#new-expense select[name="category"] option[value="${entry.category}"]`);
-            const date = new Date(entry.date); //Unix time to object
+            const date = new Date(entry.date);
 
-            dateInput.value = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, 0)}-${date.getDate().toString().padStart(2, 0)}`;
+            dateInput.value = `${date.getUTCFullYear()}-${(date.getUTCMonth() + 1).toString().padStart(2, 0)}-${date.getUTCDate().toString().padStart(2, 0)}`;
             nameInput.value = entry.name;
             amountInput.value = entry.amount;
             categorySelectOption.selected = true;

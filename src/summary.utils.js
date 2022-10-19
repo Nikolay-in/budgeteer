@@ -2,6 +2,12 @@ import { categories, getMonthInUnix } from "./common.utils";
 
 
 //Add categories monthly sum to each month
+/**
+ * 
+ * @param {object} budgets 
+ * @param {object} expenses 
+ * @returns {object}
+ */
 export function categoriesMonthlySum(budgets, expenses) {
 
     //Create categories object in each month with 0 spent
@@ -16,8 +22,7 @@ export function categoriesMonthlySum(budgets, expenses) {
     if (expenses != null) {
         //Calculate the monthly sum of each category
         for (let entry of Object.values(expenses)) {
-            const date = new Date(entry.date);
-            const month = getMonthInUnix(date);
+            const month = getMonthInUnix(entry.date);
 
             if (budgets.hasOwnProperty(month)) {
                 budgets[month].categories[entry.category] += Number(entry.amount);

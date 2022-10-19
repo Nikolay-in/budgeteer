@@ -6,7 +6,7 @@ import { categoriesMonthlySum } from "./summary.utils";
 const theadRow = document.querySelector('table.editor thead tr');
 const tbody = document.querySelector('table.editor tbody');
 const [totalRow, overrunRow, savingsRow] = document.querySelectorAll('table.editor tfoot tr');
-const [prevBtn, nextBtn] = document.querySelectorAll('section#summary button');
+const [prevBtn, presentBtn, nextBtn] = document.querySelectorAll('section#summary button');
 
 prevBtn.addEventListener('click', () => movePage('prev'));
 nextBtn.addEventListener('click', () => movePage('next'));

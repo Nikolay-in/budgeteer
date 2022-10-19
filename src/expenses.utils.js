@@ -34,10 +34,16 @@ export function getExpenses() {
     return JSON.parse(localStorage.getItem('expenses'));
 }
 
+/**
+ * 
+ * @param {number} monthInUnix 
+ * @param {number|null} editId 
+ * @returns {number}
+ */
 export function getMonthlyExpenses(monthInUnix, editId) {
     //Next month in unix
     const month = new Date(monthInUnix);
-    month.setMonth(month.getMonth() + 1);
+    month.setMonth(month.getUTCMonth() + 1);
     const nextMonthInUnix = Date.parse(month);
 
     let expenses = getExpenses();

@@ -81,7 +81,7 @@ function createRow(data) {
     const date = new Date(data.month);
 
     const row = createTag('tr', { id: data.id },
-        td(`${date.toLocaleString('en-US', { month: 'short' })}.${date.getFullYear()}`),
+        td(`${date.toLocaleString('en-US', { month: 'short', timeZone: 'UTC' })}.${date.getUTCFullYear()}`),
         td(createTag('span', { className: 'currency' }, data.income)),
         td(createTag('span', { className: 'currency' }, data.budget)),
         td(createTag('button', {}, 'Edit'), createTag('button', {}, 'Delete')),
@@ -102,7 +102,7 @@ function tableClick(e) {
             const [dateInput, incomeInput, budgetInput] = document.querySelectorAll('form#new-budget input');
             const date = new Date(entry.month); //Unix time to object
 
-            dateInput.value = `${(date.getMonth() + 1).toString().padStart(2, 0)}-${date.getFullYear()}`;
+            dateInput.value = `${(date.getUTCMonth() + 1).toString().padStart(2, 0)}-${date.getUTCFullYear()}`;
             incomeInput.value = entry.income;
             budgetInput.value = entry.budget;
 

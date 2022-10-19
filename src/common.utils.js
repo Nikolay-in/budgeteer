@@ -42,6 +42,11 @@ export function clearSelected() {
 
 
 //Get the total sum of each category
+/**
+ * 
+ * @param {object} expenses 
+ * @returns {object}
+ */
 export function categoriesSum(expenses) {
     const categoriesTotal = {};
 
@@ -59,14 +64,22 @@ export function categoriesSum(expenses) {
 }
 
 //Get total spent
+/**
+ * 
+ * @param {object} expenses 
+ * @returns {number}
+ */
 export function getTotalSpent(expenses) {
     const categoriesTotal = categoriesSum(expenses);
     return Object.values(categoriesTotal).reduce((acc, b) => acc + b, 0);
 }
 
-//Leading zero in month makes 2 hours difference ?!
+/**
+ * 
+ * @param {number} date 
+ * @returns 
+ */
 export function getMonthInUnix(date) {
-    return Date.parse(`${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, 0)}`);
+    date = new Date(date);
+    return Date.parse(`${date.getUTCFullYear()}-${(date.getUTCMonth() + 1).toString().padStart(2, 0)}`);
 }
-
-window.getMonthInUnix = getMonthInUnix;
