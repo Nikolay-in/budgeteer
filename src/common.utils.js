@@ -63,30 +63,6 @@ export function categoriesSum(expenses) {
     return categoriesTotal;
 }
 
-export function getCategoriesQarterlySum(months, expenses) {
-    const categoriesTotal = {};
-
-    if (expenses != null) {
-        const unixRangeStart = months[0];
-
-        //Calculate quarter range end
-        const date = new Date(unixRangeStart);
-        date.setUTCMonth(date.getUTCMonth() + 3);
-        const unixRangeEnd = date.getTime();
-        const expensesEntries = Object.values(expenses).filter(el => el.date >= unixRangeStart && el.date < unixRangeEnd);
-
-        for (let entry of expensesEntries) {
-            if (categoriesTotal.hasOwnProperty(entry.category)) {
-                categoriesTotal[entry.category] += Number(entry.amount);
-            } else {
-                categoriesTotal[entry.category] = Number(entry.amount);
-            }
-        }
-    }
-
-    return categoriesTotal;
-}
-
 //Get total spent
 /**
  * 
