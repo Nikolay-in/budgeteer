@@ -23,7 +23,6 @@ function setOverView() {
     remainigElement.textContent = remaining;
     savingsElement.textContent = saving;
 
-
     //Set overview bars
     const spentBar = createTag('div', { className: 'ov spent' });
     const remainBar = createTag('div', { className: 'ov remain' });
@@ -40,22 +39,19 @@ function setOverView() {
 }
 
 function setBreakdown() {
-
-    const categoriesTotalSorted = Object.entries(categoriesTotal).sort((a, b) => b[1] - a[1]);
-
     //If no data
-    if (categoriesTotalSorted.length == 0) {
+    if (categoriesTotal.length == 0) {
         document.getElementById('breakdown').append(createTag('div', { className: 'cat-row' }, 'No Data Yet.'));
     } else {
-
         //Append result
-        document.getElementById('breakdown').append(...categoriesTotalSorted.map(createCategory));
+        const categoriesTotalSorted = Object.entries(categoriesTotal).sort((a, b) => b[1] - a[1]);
+        const maxAmount = Math.max(...Object.values(categoriesTotal));
+        document.getElementById('breakdown').append(...categoriesTotalSorted.map(([catId, amount]) => createCategory(catId, amount, maxAmount)));
     }
 }
 
-function createCategory([catId, amount]) {
+function createCategory(catId, amount, maxAmount) {
     //Create bar element and set width
-    const maxAmount = Math.max(...Object.values(categoriesTotal));
     const bar = createTag('span', { className: 'bar' });
     bar.style.width = (amount / maxAmount * 500) + 'px';
 
