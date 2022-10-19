@@ -42,15 +42,18 @@ export function categoriesMonthlySum(budgets, expenses) {
     return budgets;
 }
 
-export function getCurrentQuarterUnix() {
-    const date = new Date();
+export function getQuarterUnix(dateUnix) {
+    const date = new Date(dateUnix);
     const currentMonthIndex = date.getUTCMonth();
     const quarterMonthIndex = Math.floor(currentMonthIndex / 3) * 3;
-    date.setUTCDate(quarterMonthIndex);
+    date.setUTCMonth(quarterMonthIndex);
 
-    const month1 = Date.parse(`${date.getUTCFullYear()}-${(date.getUTCMonth() + 1).toString().padStart(2, 0)}`);
-    const month2 = Date.parse(`${date.getUTCFullYear()}-${(date.getUTCMonth() + 2).toString().padStart(2, 0)}`);
-    const month3 = Date.parse(`${date.getUTCFullYear()}-${(date.getUTCMonth() + 3).toString().padStart(2, 0)}`);
+    const output = [];
 
-    return [month1, month2, month3];
+    for (let i = 0; i < 3; i++) {
+        output.push(Date.parse(`${date.getUTCFullYear()}-${(date.getUTCMonth() + 1).toString().padStart(2, 0)}`));
+        date.setUTCMonth(date.getUTCMonth() + 1);
+    }
+
+    return output;
 }

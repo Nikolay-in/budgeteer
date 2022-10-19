@@ -1,9 +1,9 @@
 import { getBudgets } from "./budget.utils";
 import { categories, createTag, th, td, tr, getCategoriesQarterlySum } from "./common.utils";
 import { getExpenses } from "./expenses.utils";
-import { categoriesMonthlySum, getCurrentQuarterUnix } from "./summary.utils";
+import { categoriesMonthlySum, getQuarterUnix } from "./summary.utils";
 
-const theadRow = document.querySelector('table.editor thead tr');
+const thead = document.querySelector('table.editor thead');
 const tbody = document.querySelector('table.editor tbody');
 const [totalRow, overrunRow, savingsRow] = document.querySelectorAll('table.editor tfoot tr');
 const [prevBtn, presentBtn, nextBtn] = document.querySelectorAll('section#summary button');
@@ -17,26 +17,28 @@ const expenses = getExpenses();
 const summary = categoriesMonthlySum(budgets, expenses); //Get monthly budgets with categories monthly sum
 
 //Start the page from the current quarter - array of 3 months in unix
-const currentPageQuarterUnix = getCurrentQuarterUnix();
-const pageOfPresentMonthQuarter = getCurrentQuarterUnix();
+let currentPageQuarter = getQuarterUnix(Date.now());
+const pageOfPresentQuarter = getQuarterUnix(Date.now());
 
 
-hydrateTable(currentPageQuarterUnix);
+hydrateTable(currentPageQuarter);
 
 function hydrateTable(page) {
     checkButtons();
 
     //Clear old entries
-    theadRow.innerHTML = '';
+    thead.innerHTML = '';
     totalRow.innerHTML = '';
     overrunRow.innerHTML = '';
     savingsRow.innerHTML = '';
-    theadRow.appendChild(th('Category'));
     totalRow.appendChild(th('Total Spent'));
     overrunRow.appendChild(th('Budget Overruns'));
     savingsRow.appendChild(th('Savings'));
 
     //Add headers
+    const tableTitle = getTableTitle(page);
+    thead.appendChild(tr(createTag('th', { colSpan: '5' }, tableTitle)));
+    const theadRow = tr(th('Category'));
     for (let month of page) {
         const date = new Date(Number(month));
         const dateString = date.toLocaleString('en-US', { month: 'short' });
@@ -44,13 +46,13 @@ function hydrateTable(page) {
         theadRow.appendChild(th(dateString));
     }
     theadRow.appendChild(th('Total'));
+    thead.appendChild(theadRow);
 
     //Remove old entries if present
     tbody.innerHTML = '';
 
     //Get each category quarterly total
     const categoriesTotal = getCategoriesQarterlySum(page, expenses);
-
     //Add a row for each category
     for (let [catId, catTotal] of Object.entries(categoriesTotal)) {
         //Create a row for the category
@@ -61,7 +63,12 @@ function hydrateTable(page) {
         //Go through months
 
         for (let month of page) {
-            const categoryMonthlySum = summary[month].categories[catId];
+            let categoryMonthlySum = 0;
+
+            if (summary.hasOwnProperty(month)) {
+                categoryMonthlySum = summary[month].categories[catId];
+            }
+
             row.appendChild(td(createTag('span', { className: 'currency' }, categoryMonthlySum)));
             categoryTotal += categoryMonthlySum;
         }
@@ -76,21 +83,28 @@ function hydrateTable(page) {
     let totalSavings = 0;
 
     for (let month of page) {
-        //Spent
-        const spentSum = Object.values(summary[month].categories).reduce((acc, b) => acc + b, 0);
+        let spentSum = 0;
+        let overrun = 0;
+        let saving = 0;
+
+        if (summary.hasOwnProperty(month)) {
+            //Spent
+            spentSum = Object.values(summary[month].categories).reduce((acc, b) => acc + b, 0);
+            totalSpent += spentSum;
+
+            //Overruns
+            overrun = spentSum - Number(summary[month].budget);
+            overrun = overrun < 0 ? 0 : overrun;
+            totalOverrun += overrun;
+
+            //Savings
+            saving = Number(summary[month].income) - spentSum;
+            totalSavings += saving;
+        }
+
         totalRow.appendChild(td(createTag('span', { className: 'currency' }, spentSum)));
-        totalSpent += spentSum;
-
-        //Overruns
-        let overrun = spentSum - Number(summary[month].budget);
-        overrun = overrun < 0 ? 0 : overrun;
         overrunRow.appendChild(td(createTag('span', { className: 'currency' }, overrun)));
-        totalOverrun += overrun;
-
-        //Savings
-        const saving = Number(summary[month].income) - spentSum;
         savingsRow.appendChild(td(createTag('span', { className: 'currency' }, saving)));
-        totalSavings += saving;
     }
 
     totalRow.appendChild(th(createTag('span', { className: 'currency' }, totalSpent)));
@@ -101,22 +115,38 @@ function hydrateTable(page) {
 }
 
 function movePage(to) {
-    // //Set new page
+    //Set new page
     if (to == 'prev') {
+        //Calculate previous quarter start
+        const date = new Date(currentPageQuarter[0]);
+        date.setUTCMonth(date.getUTCMonth() - 3);
+        const prevQuarterStartUnix = Date.parse(`${date.getUTCFullYear()}-${(date.getUTCMonth() + 1).toString().padStart(2, 0)}`);
+        const prevPageQuarterUnix = getQuarterUnix(prevQuarterStartUnix);
+
+        currentPageQuarter = prevPageQuarterUnix;
+        hydrateTable(prevPageQuarterUnix);
 
     } else if (to == 'next') {
+        //Calculate next quarter start
+        const date = new Date(currentPageQuarter[0]);
+        date.setUTCMonth(date.getUTCMonth() + 3);
+        const nextQuarterStartUnix = Date.parse(`${date.getUTCFullYear()}-${(date.getUTCMonth() + 1).toString().padStart(2, 0)}`);
+        const nextPageQuarterUnix = getQuarterUnix(nextQuarterStartUnix);
 
+        currentPageQuarter = nextPageQuarterUnix;
+        hydrateTable(nextPageQuarterUnix);
+
+    } else if (to == 'present') {
+
+        currentPageQuarter = pageOfPresentQuarter;
+        hydrateTable(pageOfPresentQuarter);
     }
-
-    checkButtons();
-
-    // hydrateTable(currentPage);
 }
 
 function checkButtons() {
-    if (currentPageQuarterUnix[0] == pageOfPresentMonthQuarter[0]) {
+    if (currentPageQuarter[0] == pageOfPresentQuarter[0]) {
         presentBtn.disabled = true;
-    } else if (presentBtn.disabled == false) {
+    } else if (presentBtn.disabled == true) {
         presentBtn.disabled = false;
     }
 }
@@ -126,4 +156,12 @@ function checkEmptyTable() {
         const row = tr(createTag('td', { colSpan: '5' }, 'No entries yet.'));
         tbody.replaceChildren(row);
     }
+}
+
+function getTableTitle(page) {
+    const date = new Date(page[0]);
+    const currentMonthIndex = date.getUTCMonth();
+    const quarterMonthIndex = Math.floor(currentMonthIndex / 3) + 1;
+
+    return `Q${quarterMonthIndex} - ${date.getUTCFullYear()}`;
 }
