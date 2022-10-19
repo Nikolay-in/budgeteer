@@ -1,5 +1,5 @@
 const path = require('path');
-// const HtmlWebpackPlugin = require('html-webpack-plugin');
+// const HtmlWebpackPlugin = require('html-webpack-plugin'); reminder for later use
 
 module.exports = {
     mode: 'development',
@@ -11,7 +11,6 @@ module.exports = {
         budget: path.resolve(__dirname, 'src/budget.js')
     },
     output: {
-        //publicPath - so hot-reloading works with true src paths
         publicPath: '/dist/',
         path: path.resolve(__dirname, 'dist'),
         filename: '[name].bundle.js'
