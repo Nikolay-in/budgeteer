@@ -1,6 +1,6 @@
 import { addBudget, getBudgets, getBudget, delBudget, checkBudgetExpenses } from "./budget.utils";
 import { clearSelected, createTag, tr, td } from "./common.utils";
-import { delMonthlyExpenses } from "./expenses.utils";
+import { delMonthlyExpenses, getMonthlyExpenses } from "./expenses.utils";
 
 
 const form = document.getElementById('new-budget');
@@ -65,6 +65,13 @@ function onSave(e) {
     //Set id depending if in edit mode
     if (editId) {
         formData.id = editId;
+
+        //Check if new income is enough according to the monthly expenses
+        const monthlyExpenses = getMonthlyExpenses(Number(formData.id));
+        if (monthlyExpenses > formData.income) {
+            return alert('Your monthly expenses exceed the new income amount. Increase income or delete expenses.');
+        }
+
         clearSelected();
     } else {
         formData.id = formData.month;
