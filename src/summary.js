@@ -8,9 +8,9 @@ const tbody = document.querySelector('table.editor tbody');
 const [totalRow, overrunRow, savingsRow] = document.querySelectorAll('table.editor tfoot tr');
 const [prevBtn, presentBtn, nextBtn] = document.querySelectorAll('section#summary button');
 
-prevBtn.addEventListener('click', () => movePage('prev'));
-presentBtn.addEventListener('click', () => movePage('present'));
-nextBtn.addEventListener('click', () => movePage('next'));
+prevBtn.addEventListener('click', prevPage);
+presentBtn.addEventListener('click', presentTimePage);
+nextBtn.addEventListener('click', nextPage);
 
 const budgets = getBudgets();
 const expenses = getExpenses();
@@ -116,27 +116,31 @@ function hydrateTable(page) {
     checkEmptyTable();
 }
 
-function movePage(to) {
-    //Set new page
-    let targetPage;
+function prevPage() {
     const date = new Date(currentPageQuarter[0]);
 
-    if (to == 'prev') {
-        //Calculate previous quarter start
-        date.setUTCMonth(date.getUTCMonth() - 3);
-        const prevQuarterStartUnix = date.getTime();
-        targetPage = getQuarterUnix(prevQuarterStartUnix);
-    } else if (to == 'next') {
-        //Calculate next quarter start
-        date.setUTCMonth(date.getUTCMonth() + 3);
-        const nextQuarterStartUnix = date.getTime();
-        targetPage = getQuarterUnix(nextQuarterStartUnix);
-    } else if (to == 'present') {
-        targetPage = pageOfPresentTimeQuarter;
-    }
-    currentPageQuarter = targetPage;
+    //Calculate previous quarter start
+    date.setUTCMonth(date.getUTCMonth() - 3);
+    const prevQuarterStartUnix = date.getTime();
+    currentPageQuarter = getQuarterUnix(prevQuarterStartUnix);
 
     hydrateTable(currentPageQuarter);
+}
+
+function nextPage() {
+    const date = new Date(currentPageQuarter[0]);
+
+    //Calculate next quarter start
+    date.setUTCMonth(date.getUTCMonth() + 3);
+    const nextQuarterStartUnix = date.getTime();
+    currentPageQuarter = getQuarterUnix(nextQuarterStartUnix);
+
+    hydrateTable(currentPageQuarter);
+}
+
+function presentTimePage() {
+    currentPageQuarter = pageOfPresentTimeQuarter;
+    hydrateTable(pageOfPresentTimeQuarter);
 }
 
 function checkButtons() {
