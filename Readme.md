@@ -14,7 +14,7 @@
 Install the dependencies and devDependencies and start the server:
 
 ```sh
-npm i
+npm install
 npm run build
 npm run start
 ```
@@ -22,6 +22,6 @@ npm run start
 For development environments:
 
 ```sh
-npm i
+npm install
 npm run dev
 ```
