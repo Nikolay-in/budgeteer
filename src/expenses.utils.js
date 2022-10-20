@@ -3,7 +3,7 @@
  * @param {object} entry 
  */
 export function addExpense(entry) {
-    let data = JSON.parse(localStorage.getItem('expenses'));
+    let data = getExpenses();
     data = { ...data, [entry.id]: entry };
 
     localStorage.setItem('expenses', JSON.stringify(data));
@@ -14,9 +14,24 @@ export function addExpense(entry) {
  * @param {string} id 
  */
 export function delExpense(id) {
-    let data = JSON.parse(localStorage.getItem('expenses'));
+    let data = getExpenses();
     delete data[id];
     localStorage.setItem('expenses', JSON.stringify(data));
+}
+
+export function delMonthlyExpenses(monthInUnix) {
+    const date = new Date(Number(monthInUnix));
+    date.setUTCMonth(date.getUTCMonth() + 1);
+    const nextMonthInUnix = date.getTime();
+    let expenses = getExpenses();
+
+    for (let [key, value] of Object.entries(expenses)) {
+        if (value.date >= monthInUnix && value.date < nextMonthInUnix) {
+            delete expenses[key];
+        }
+    }
+
+    localStorage.setItem('expenses', JSON.stringify(expenses));
 }
 
 /**
@@ -25,7 +40,7 @@ export function delExpense(id) {
  * @returns {object|null}
  */
 export function getExpense(id) {
-    const data = JSON.parse(localStorage.getItem('expenses'));
+    const data = getExpenses();
 
     return data ? data[id] : null;
 }

@@ -1,5 +1,6 @@
-import { addBudget, getBudgets, getBudget, delBudget } from "./budget.utils";
+import { addBudget, getBudgets, getBudget, delBudget, checkBudgetExpenses } from "./budget.utils";
 import { clearSelected, createTag, tr, td } from "./common.utils";
+import { delMonthlyExpenses } from "./expenses.utils";
 
 
 const form = document.getElementById('new-budget');
@@ -111,6 +112,18 @@ function tableClick(e) {
             row.classList.add('selected');
 
         } else if (e.target.textContent == 'Delete' && confirm('Are you sure you want to delete this entry?')) {
+            //Check if the monthly budget has any expenses entered
+            if (checkBudgetExpenses(row.id) > 0) {
+
+                if (confirm('Selected monthly budget has expenses, which will be deleted. Do you want to proceed?') == false) {
+                    return;
+                }
+
+                //Delete monthly expenses
+                delMonthlyExpenses(row.id);
+            }
+
+
             //Delete from localStorage
             delBudget(row.id);
             row.remove();

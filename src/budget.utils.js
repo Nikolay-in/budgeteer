@@ -1,3 +1,5 @@
+import { getExpenses } from "./expenses.utils";
+
 /**
  * 
  * @param {object} entry 
@@ -30,6 +32,22 @@ export function delBudget(id) {
     delete data[id];
     localStorage.setItem('budgets', JSON.stringify(data));
 }
+
+export function checkBudgetExpenses(monthInUnix) {
+    const date = new Date(Number(monthInUnix));
+    date.setUTCMonth(date.getUTCMonth() + 1);
+    const nextMonthInUnix = date.getTime();
+    let expenses = getExpenses();
+
+    if (expenses) {
+        expenses = Object.values(expenses).filter(el => el.date >= monthInUnix && el.date < nextMonthInUnix);
+        return expenses.length;
+    } else {
+        return 0;
+    }
+}
+
+window.checkBudgetExpenses = checkBudgetExpenses;
 
 /**
  * 
