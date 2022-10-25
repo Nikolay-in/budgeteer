@@ -41,7 +41,7 @@ export function categoriesMonthlySum(budgets, expenses) {
     return budgets;
 }
 
-/**
+/** Get the current quarter months in unix
  * 
  * @param {number} dateUnix 
  * @returns {number[]}
