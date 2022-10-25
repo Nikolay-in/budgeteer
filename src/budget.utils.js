@@ -47,8 +47,6 @@ export function checkBudgetExpenses(monthInUnix) {
     }
 }
 
-window.checkBudgetExpenses = checkBudgetExpenses;
-
 /**
  * 
  * @param {string} id 
