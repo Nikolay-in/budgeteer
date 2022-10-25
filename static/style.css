@@ -261,3 +261,11 @@ select {
 .selected {
     background-color: yellowgreen;
 }
+
+.overview {
+    display: inline-table;
+}
+
+.overview-title {
+    text-align: center;
+}
