@@ -54,7 +54,7 @@ function onSave(e) {
         return alert('Required date format is mm-yyyy.');
     }
 
-    if (formData.income < formData.budget) {
+    if (Number(formData.income) < Number(formData.budget)) {
         return alert('Income cannot be less than budget.');
     }
 
